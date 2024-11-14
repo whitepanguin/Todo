@@ -4,11 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// redux 추가
+import { legacy_createStore as creatStore} from 'redux';
+import { Provider } from 'react-redux';
+import {devToolsEnhancer} from '@redux-devtools/extension';
+import rootReducer from './modules';
+const store = creatStore(rootReducer,devToolsEnhancer())
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </React.StrictMode>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function
