@@ -7,6 +7,7 @@ theme.PALLETE = {
   },
   secondary: "#f1ebf5",
   white: "#fff",
+  black: "#333",
   gray: {
     100: "#F1EBF5",
     200: "#AEA8B2",

@@ -12,6 +12,9 @@ const variantCSS = {
   `,
   black : css`
     background-color: ${({theme}) => theme.PALLETE["black"]};
+  `,
+  gray : css`
+    background-color: ${({theme}) => theme.PALLETE.background["gray"]};
   `
 };
 
@@ -135,13 +138,14 @@ const fontCSS = {
   `,
 }
 
-const Button = styled.button`
+const Input = styled.input`
   ${({variant}) => variantCSS[variant]};
   ${({shape}) => shapeCSS[shape]};
   ${({size}) => sizeCSS[size]};
   ${({border}) => borderCSS[border]};
   ${({color}) => colorCSS[color]};
   ${({font}) => fontCSS[font]};
+  border: none;
 `
 
-export default Button;
+export default Input;
