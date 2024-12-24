@@ -3,9 +3,16 @@ import S from './style';
 import BasicInput from '../../components/input/BasicInput';
 import BasicButton from '../../components/button/BasicButton';
 import { useForm } from 'react-hook-form';
+import {useSelector, useDispatch} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-const SignUp = () => {
+const SignIn = () => {
+
+    // 로그인 이후 처리
+    const {isLogin, currentUser} = useSelector(state => state.user);
+    const dispatch = useDispatch();
+    // console.log(isLogin,currentUser)
+    const navigate = useNavigate();
 
     // 이메일 양식 @,. 이메일 주소를 포함한 패턴을 지켜야 합니다.
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -46,7 +53,6 @@ const SignUp = () => {
     // \W : non word를 표현하며 알파벳 + 숫자 + _ 가 아닌 문자를 의미한다. 
     
     // console.log(useForm())
-    const navigate = useNavigate();
     const {register, handleSubmit, getValues, 
             formState: {isSubmitting, isSubmitted,errors}
         } = useForm({mode :"onChange"});
@@ -58,7 +64,7 @@ const SignUp = () => {
             const {email,password}=data;
             // 회원가입 데이터 요청하기
             // fetch()이용, localhost:8000
-            await fetch("http://localhost:8000/user/signUp",{
+            await fetch("http://localhost:8000/oauth/local",{
                 method: "POST",
                 headers:{
                     "Content-Type":"application/json"
@@ -68,17 +74,20 @@ const SignUp = () => {
                     password: password
                 })
             })
-            .then((res) => res.json())
-            .then((res) => {
-                // 정상 응답을 받지 못했을 때
-                if(!res.ok){
-                    return alert(res.message);
-                }
-                alert(res.message);
-                navigate("/sign-in")
-            })
-            .catch(console.err)
+            .then((res)=>res.json())
+            .then((res)=>{
+                // console.log(res)
 
+                if(!res.ok){alert(res.message) }
+                // 정상 응답 및 로그인 처리
+                // 1) 받은 token 정보를 로컬스토리지에 저장
+                localStorage.setItem("jwtToken",res.jwtToken);
+                // 2) 리다이렉트 해야하는 페이징 처리
+                navigate("/")
+                // 3) 화면에 뿌릴 수 있도록 유저정보를 파싱(pathing) redux
+                
+            })
+            
         })}>
            
             <S.Label>
@@ -119,33 +128,17 @@ const SignUp = () => {
                     <S.ConfirmMessage>소문자, 숫자, 특수문자를 각 하나 포함한 8자리 이상이여야 합니다.</S.ConfirmMessage>
                 )}
             </S.Label>
-            <S.Label>
-                <S.Title>비밀번호 확인</S.Title>
-                <S.Input 
-                size={"full"} shape={"small"} variant={"gray"} color={"black"}
-                id="passwordConfirm" type="password" placeholder="비밀번호 확인"
-                {...register("passwordConfirm",{
-                    required: true,
-                    validate:{
-                        matchPassword : (value)=>{
-                            const {password} = getValues();
-                            console.log(password===value,`password:${password},value:${value}`)
-                            return password === value;
-                        }
-                    }
-                })}
-                />
-            </S.Label>
+            
             {errors?.passwordConfirm && (
                     <S.ConfirmMessage>비밀번호를 확인하세요.</S.ConfirmMessage>
                 )}
             <BasicButton size={"full"} shape= {"small"} variant={"black"} color={"white"}
              disabled={isSubmitting}
             >
-                회원가입
+                로그인
             </BasicButton>
         </S.Form>
     );
 };
 
-export default SignUp;
+export default SignIn;

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { felxCenter, flexCenterColumn } from "../../global/common";
+import { Link } from "react-router-dom";
 
 const S = {};
 
@@ -32,5 +33,15 @@ S.button = styled.div`
 
 `;
 
+S.IconButton = styled.button`
+    width: 48px;
+    height: 48px;
+    margin: 0 4px;
+    background: none;
+
+    & img {
+        width: 100%;
+    }
+`;
 
 export default S;

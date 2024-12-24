@@ -3,9 +3,8 @@ import S from './style';
 import BasicInput from '../../components/input/BasicInput';
 import BasicButton from '../../components/button/BasicButton';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
-const SignUp = () => {
+const Update = () => {
 
     // 이메일 양식 @,. 이메일 주소를 포함한 패턴을 지켜야 합니다.
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -46,7 +45,6 @@ const SignUp = () => {
     // \W : non word를 표현하며 알파벳 + 숫자 + _ 가 아닌 문자를 의미한다. 
     
     // console.log(useForm())
-    const navigate = useNavigate();
     const {register, handleSubmit, getValues, 
             formState: {isSubmitting, isSubmitted,errors}
         } = useForm({mode :"onChange"});
@@ -58,8 +56,8 @@ const SignUp = () => {
             const {email,password}=data;
             // 회원가입 데이터 요청하기
             // fetch()이용, localhost:8000
-            await fetch("http://localhost:8000/user/signUp",{
-                method: "POST",
+            await fetch("http://localhost:8000/users/modify",{
+                method: "PUT",
                 headers:{
                     "Content-Type":"application/json"
                 },
@@ -68,84 +66,42 @@ const SignUp = () => {
                     password: password
                 })
             })
-            .then((res) => res.json())
-            .then((res) => {
-                // 정상 응답을 받지 못했을 때
-                if(!res.ok){
-                    return alert(res.message);
-                }
-                alert(res.message);
-                navigate("/sign-in")
+            .then((res)=>res.json())
+            .then((res)=>{
+                console.log(res)
             })
-            .catch(console.err)
-
+            
         })}>
            
             <S.Label>
-                <S.Title>이메일</S.Title>
-                <S.Input 
-                size={"full"} shape={"small"} variant={"gray"} color={"black"}
-                id="email" type="text" placeholder="이메일을 입력하세요" autoComplete='off'
-                {...register("email",{
-                    required: true,
-                    pattern: {
-                        value: emailRegex
-                    }
-                })}
+                <S.Title>이름</S.Title>
+                <S.Input
+                 type="text" placeholder="이름을 입력하세요" autoComplete='off'
+                {...register("name")}
                 />
-                {errors?.email?.type==='required' && (
-                    <S.ConfirmMessage>이메일을 입력해주세요.</S.ConfirmMessage>
-                )}
-                {errors?.email?.type==='pattern' && (
-                    <S.ConfirmMessage>이메일 양식에 맞게 입력해주세요.</S.ConfirmMessage>
-                )}
             </S.Label>
             <S.Label>
-                <S.Title>비밀번호</S.Title>
-                <S.Input 
-                size={"full"} shape={"small"} variant={"gray"} color={"black"}
-                id="password" type="password" placeholder="비밀번호를 입력하세요"
-                {...register("password",{
-                    required: true,
-                    pattern: {
-                        value: passwordRegex,
-                    }
-                })}
+                <S.Title>나이</S.Title>
+                <S.Input
+                 type="text" placeholder="나이를 입력하세요" autoComplete='off'
+                {...register("age")}
                 />
-                {errors?.password?.type ==='required' &&(
-                    <S.ConfirmMessage>비밀번호를 입력하세요.</S.ConfirmMessage>
-                )}
-                {errors?.password?.type ==='pattern' &&(
-                    <S.ConfirmMessage>소문자, 숫자, 특수문자를 각 하나 포함한 8자리 이상이여야 합니다.</S.ConfirmMessage>
-                )}
             </S.Label>
             <S.Label>
-                <S.Title>비밀번호 확인</S.Title>
-                <S.Input 
-                size={"full"} shape={"small"} variant={"gray"} color={"black"}
-                id="passwordConfirm" type="password" placeholder="비밀번호 확인"
-                {...register("passwordConfirm",{
-                    required: true,
-                    validate:{
-                        matchPassword : (value)=>{
-                            const {password} = getValues();
-                            console.log(password===value,`password:${password},value:${value}`)
-                            return password === value;
-                        }
-                    }
-                })}
+                <S.Title>휴대폰</S.Title>
+                <S.Input
+                 type="text" placeholder="번호를 입력하세요" autoComplete='off'
+                {...register("phone")}
                 />
             </S.Label>
-            {errors?.passwordConfirm && (
-                    <S.ConfirmMessage>비밀번호를 확인하세요.</S.ConfirmMessage>
-                )}
+            
             <BasicButton size={"full"} shape= {"small"} variant={"black"} color={"white"}
              disabled={isSubmitting}
             >
-                회원가입
+             회원 정보 수정
             </BasicButton>
         </S.Form>
     );
 };
 
-export default SignUp;
+export default Update;
